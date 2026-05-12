@@ -1,18 +1,17 @@
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = "argocd"
+  }
+}
+
 resource "helm_release" "argocd" {
-  name      = "argocd"
-  namespace = "argocd"
+  name = "argocd"
+
+  namespace = kubernetes_namespace.argocd.metadata[0].name
 
   repository = "https://argoproj.github.io/argo-helm"
 
   chart = "argo-cd"
-
-  values = [
-    <<EOF
-server:
-  service:
-    type: ClusterIP
-EOF
-  ]
 
   depends_on = [
     helm_release.alb_controller

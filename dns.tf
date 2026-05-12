@@ -1,35 +1,35 @@
-resource "cloudflare_dns_record" "argocd" {
+# resource "cloudflare_dns_record" "argocd" {
 
-  depends_on = [
-    kubernetes_ingress_v1.argocd
-  ]
+#   depends_on = [
+#     kubernetes_ingress_v1.argocd
+#   ]
 
-  zone_id = var.cloudflare_zone_id
+#   zone_id = var.cloudflare_zone_id
 
-  name = "argocd"
-  type = "CNAME"
+#   name = "argocd"
+#   type = "CNAME"
 
-  content = kubernetes_ingress_v1.argocd.status[0].load_balancer[0].ingress[0].hostname
+#   content = kubernetes_ingress_v1.argocd.status[0].load_balancer[0].ingress[0].hostname
 
-  ttl = 1
+#   ttl = 1
 
-  proxied = true
-}
+#   proxied = true
+# }
 
-resource "cloudflare_dns_record" "grafana" {
+# resource "cloudflare_dns_record" "grafana" {
 
-  depends_on = [
-    kubernetes_ingress_v1.grafana
-  ]
+#   depends_on = [
+#     kubernetes_ingress_v1.grafana
+#   ]
 
-  zone_id = var.cloudflare_zone_id
+#   zone_id = var.cloudflare_zone_id  
 
-  name = "grafana"
-  type = "CNAME"
+#   name = "grafana"
+#   type = "CNAME"
 
-  content = kubernetes_ingress_v1.grafana.status[0].load_balancer[0].ingress[0].hostname
+#   content = kubernetes_ingress_v1.grafana.status[0].load_balancer[0].ingress[0].hostname
 
-  ttl = 1
+#   ttl = 1
 
-  proxied = true
-}
+#   proxied = true
+# }

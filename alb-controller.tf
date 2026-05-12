@@ -1,3 +1,9 @@
+resource "aws_iam_policy" "alb_controller" {
+  name = "AWSLoadBalancerControllerIAMPolicy"
+
+  policy = file("${path.module}/iam/alb-controller-policy.json")
+}
+
 resource "aws_iam_role" "alb_controller" {
   name = "alb-controller-role"
 
@@ -27,12 +33,17 @@ resource "aws_iam_role" "alb_controller" {
 }
 
 resource "aws_iam_role_policy_attachment" "alb_controller" {
-  role       = aws_iam_role.alb_controller.name
+  role = aws_iam_role.alb_controller.name
 
-  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+  policy_arn = aws_iam_policy.alb_controller.arn
 }
 
 resource "helm_release" "alb_controller" {
+
+  depends_on = [
+    aws_iam_role_policy_attachment.alb_controller
+  ]
+
   name      = "aws-load-balancer-controller"
   namespace = "kube-system"
 
@@ -53,7 +64,7 @@ resource "helm_release" "alb_controller" {
       value = "true"
     },
     {
-      name = "serviceAccount.name"
+      name  = "serviceAccount.name"
 
       value = "aws-load-balancer-controller"
     },
