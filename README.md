@@ -11,11 +11,11 @@ aws-platform/
 ├── ingress.tf
 └── dns.tf
 
-✔ Sensitive
+✔ Sensitive & ENV
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 CLOUDFLARE_API_TOKEN
 
-✔ Environment-specific
+✔ Environment-specific & Terraform variables
 region
 cloudflare_zone_id
