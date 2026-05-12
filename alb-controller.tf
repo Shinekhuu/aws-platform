@@ -12,26 +12,40 @@ resource "aws_iam_role" "alb_controller" {
       }
 
       Action = "sts:AssumeRoleWithWebIdentity"
+
+      Condition = {
+        StringEquals = {
+          "${replace(
+            data.terraform_remote_state.infra.outputs.oidc_provider_url,
+            "https://",
+            ""
+          )}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+        }
+      }
     }]
   })
 }
 
 resource "aws_iam_role_policy_attachment" "alb_controller" {
   role       = aws_iam_role.alb_controller.name
+
   policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
 }
 
 resource "helm_release" "alb_controller" {
-  name       = "aws-load-balancer-controller"
-  namespace  = "kube-system"
+  name      = "aws-load-balancer-controller"
+  namespace = "kube-system"
 
   repository = "https://aws.github.io/eks-charts"
 
   chart = "aws-load-balancer-controller"
 
+  timeout = 1200
+
   set = [
     {
       name  = "clusterName"
+
       value = data.terraform_remote_state.infra.outputs.cluster_name
     },
     {
@@ -39,7 +53,12 @@ resource "helm_release" "alb_controller" {
       value = "true"
     },
     {
-      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      name = "serviceAccount.name"
+
+      value = "aws-load-balancer-controller"
+    },
+    {
+      name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
 
       value = aws_iam_role.alb_controller.arn
     }

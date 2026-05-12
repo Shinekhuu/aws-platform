@@ -5,6 +5,12 @@ resource "helm_release" "prometheus" {
   repository = "https://prometheus-community.github.io/helm-charts"
 
   chart = "kube-prometheus-stack"
+
+  timeout = 1200
+
+  depends_on = [
+    helm_release.alb_controller
+  ]
 }
 
 resource "helm_release" "loki" {

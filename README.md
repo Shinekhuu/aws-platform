@@ -19,3 +19,6 @@ CLOUDFLARE_API_TOKEN
 ✔ Environment-specific & Terraform variables
 region
 cloudflare_zone_id
+
+
+TODO: IRSA remove хийж байна temporarily.
