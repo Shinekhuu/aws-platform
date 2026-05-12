@@ -7,3 +7,7 @@ variable "cloudflare_zone_id" {}
 variable "domain_name" {
   default = "gocars.mn"
 }
+
+variable "cloudflare_api_token" {
+  sensitive = true
+}

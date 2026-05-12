@@ -16,6 +16,8 @@ resource "kubernetes_ingress_v1" "argocd" {
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
       "alb.ingress.kubernetes.io/target-type" = "ip"
+
+      "external-dns.alpha.kubernetes.io/hostname" = "argocd.${var.domain_name}"
     }
   }
 
@@ -61,6 +63,8 @@ resource "kubernetes_ingress_v1" "grafana" {
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
       "alb.ingress.kubernetes.io/target-type" = "ip"
+
+      "external-dns.alpha.kubernetes.io/hostname" = "grafana.${var.domain_name}"
     }
   }
 
