@@ -10,4 +10,5 @@ resource "helm_release" "argocd" {
   depends_on = [
     helm_release.alb_controller
   ]
+  
 }
