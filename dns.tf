@@ -17,13 +17,19 @@ resource "cloudflare_dns_record" "argocd" {
 }
 
 resource "cloudflare_dns_record" "grafana" {
+
+  depends_on = [
+    kubernetes_ingress_v1.grafana
+  ]
+
   zone_id = var.cloudflare_zone_id
 
   name = "grafana"
-  ttl = 1
   type = "CNAME"
 
   content = kubernetes_ingress_v1.grafana.status[0].load_balancer[0].ingress[0].hostname
+
+  ttl = 1
 
   proxied = true
 }
