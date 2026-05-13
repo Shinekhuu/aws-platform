@@ -52,7 +52,6 @@ resource "helm_release" "alb_controller" {
 
   chart = "aws-load-balancer-controller"
 
-  atomic           = true
   cleanup_on_fail  = true
   wait             = true
 
