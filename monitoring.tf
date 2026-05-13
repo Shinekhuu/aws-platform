@@ -27,12 +27,11 @@ resource "helm_release" "prometheus" {
       adminUser: "${var.grafana_admin_user}"
       adminPassword: "${var.grafana_admin_password}"
 
-    additionalDataSources:
-      - name: Loki
-        type: loki
-        access: proxy
-        url: http://loki:3100
-        isDefault: false
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://loki:3100
 
     alertmanager:
       enabled: false
