@@ -12,13 +12,20 @@ resource "helm_release" "argocd" {
 
   chart = "argo-cd"
 
+  cleanup_on_fail = true
+  wait            = true
+
+  replace       = true
+  force_update  = true
+  recreate_pods = true
+
   timeout = 1200
 
   values = [
-<<EOF
-configs:
-  secret:
-    argocdServerAdminPassword: "${var.argocd_admin_password}"
-EOF
+    <<EOF
+    configs:
+      secret:
+        argocdServerAdminPassword: "${var.argocd_admin_password}"
+    EOF
   ]
 }
