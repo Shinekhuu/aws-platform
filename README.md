@@ -4,6 +4,7 @@ aws-platform/
 ├── providers.tf
 ├── remote-state.tf
 │
+├── acm.tf
 ├── alb-controller.tf
 ├── argocd.tf
 ├── monitoring.tf
