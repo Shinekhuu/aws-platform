@@ -23,10 +23,6 @@ resource "helm_release" "external_dns" {
       value = "CF_API_TOKEN"
     },
     {
-      name  = "env[0].value"
-      value = var.cloudflare_api_token
-    },
-    {
       name  = "policy"
       value = "sync"
     },
@@ -37,6 +33,13 @@ resource "helm_release" "external_dns" {
     {
       name  = "txtOwnerId"
       value = "gocars"
+    }
+  ]
+
+  set_sensitive = [
+    {
+      name  = "env[0].value"
+      value = var.cloudflare_api_token
     }
   ]
 }
