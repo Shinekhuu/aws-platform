@@ -36,6 +36,6 @@ resource "aws_acm_certificate_validation" "main" {
 
   validation_record_fqdns = [
     for record in cloudflare_dns_record.acm_validation :
-    record.hostname
+    record.name
   ]
 }
