@@ -13,7 +13,3 @@ data "terraform_remote_state" "infra" {
 data "aws_eks_cluster" "this" {
   name = data.terraform_remote_state.infra.outputs.cluster_name
 }
-
-data "aws_eks_cluster_auth" "this" {
-  name = data.aws_eks_cluster.this.name
-}
