@@ -64,3 +64,10 @@ chmod 700 $XDG_RUNTIME_DIR
 helm list -n kube-system
 
 helm uninstall aws-load-balancer-controller -n kube-system
+
+----------
+
+For argocd password generate:
+htpasswd -nbBC 10 "" P@ssw0rd \
+| tr -d ':\n' \
+| sed 's/$2y/$2a/'
