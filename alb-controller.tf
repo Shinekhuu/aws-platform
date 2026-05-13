@@ -68,6 +68,14 @@ resource "helm_release" "alb_controller" {
       value = data.terraform_remote_state.infra.outputs.cluster_name
     },
     {
+      name  = "region"
+      value = var.region
+    },
+    {
+      name  = "vpcId"
+      value = data.terraform_remote_state.infra.outputs.vpc_id
+    },
+    {
       name  = "serviceAccount.create"
       value = "true"
     },
