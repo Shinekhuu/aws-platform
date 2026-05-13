@@ -1,7 +1,8 @@
 resource "helm_release" "argocd" {
-  name = "argocd"
 
-  namespace = kubernetes_namespace_v1.argocd.metadata[0].name
+  name = "argocd"
+  namespace = "argocd"
+  create_namespace = true
 
   repository = "https://argoproj.github.io/argo-helm"
 

@@ -6,6 +6,7 @@ resource "helm_release" "prometheus" {
 
   name      = "prometheus"
   namespace = "monitoring"
+  create_namespace = true
 
   repository = "https://prometheus-community.github.io/helm-charts"
 
@@ -15,13 +16,14 @@ resource "helm_release" "prometheus" {
 }
 
 resource "helm_release" "loki" {
-
+  
   depends_on = [
     helm_release.prometheus
   ]
 
   name      = "loki"
   namespace = "monitoring"
+  create_namespace = true
 
   repository = "https://grafana.github.io/helm-charts"
 
