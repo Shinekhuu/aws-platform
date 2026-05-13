@@ -1,11 +1,11 @@
 resource "helm_release" "argocd" {
-  
+
   depends_on = [
     helm_release.alb_controller
   ]
 
-  name = "argocd"
-  namespace = "argocd"
+  name             = "argocd"
+  namespace        = "argocd"
   create_namespace = true
 
   repository = "https://argoproj.github.io/argo-helm"
@@ -22,10 +22,17 @@ resource "helm_release" "argocd" {
   timeout = 1200
 
   values = [
-    <<EOF
-    configs:
-      secret:
-        argocdServerAdminPassword: "${var.argocd_admin_password}"
-    EOF
+<<EOF
+configs:
+  secret:
+    argocdServerAdminPassword:
+      "${var.argocd_admin_password}"
+
+  cm:
+    url: https://argocd.${var.domain_name}
+
+server:
+  insecure: true
+EOF
   ]
 }

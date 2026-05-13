@@ -22,8 +22,6 @@ resource "kubernetes_ingress_v1" "argocd" {
 
       "alb.ingress.kubernetes.io/ssl-redirect" = "443"
 
-      "alb.ingress.kubernetes.io/backend-protocol" = "HTTPS"
-
       "alb.ingress.kubernetes.io/certificate-arn" = aws_acm_certificate.main.arn
 
       "external-dns.alpha.kubernetes.io/hostname" = "argocd.${var.domain_name}"
@@ -47,7 +45,7 @@ resource "kubernetes_ingress_v1" "argocd" {
               name = "argocd-server"
 
               port {
-                number = 443
+                number = 80
               }
             }
           }
