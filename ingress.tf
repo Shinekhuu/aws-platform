@@ -45,7 +45,7 @@ resource "kubernetes_ingress_v1" "argocd" {
               name = "argocd-server"
 
               port {
-                number = 80
+                number = 443
               }
             }
           }
