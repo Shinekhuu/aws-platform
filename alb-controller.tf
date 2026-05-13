@@ -46,6 +46,7 @@ resource "helm_release" "alb_controller" {
 
   name      = "aws-load-balancer-controller"
   namespace = "kube-system"
+  create_namespace = true
 
   repository = "https://aws.github.io/eks-charts"
 
@@ -58,7 +59,7 @@ resource "helm_release" "alb_controller" {
   replace          = true
   force_update     = true
   recreate_pods    = true
-  
+
   timeout = 1200
 
   set = [
