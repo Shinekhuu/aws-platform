@@ -11,3 +11,13 @@ variable "domain_name" {
 variable "cloudflare_api_token" {
   sensitive = true
 }
+
+variable "argocd_admin_password" {
+  sensitive = true
+}
+
+variable "grafana_admin_user" {}
+
+variable "grafana_admin_password" {
+  sensitive = true
+}

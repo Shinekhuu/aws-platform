@@ -16,7 +16,7 @@ resource "helm_release" "prometheus" {
 }
 
 resource "helm_release" "loki" {
-  
+
   depends_on = [
     helm_release.prometheus
   ]
@@ -30,4 +30,12 @@ resource "helm_release" "loki" {
   chart = "loki-stack"
 
   timeout = 1200
+
+  values = [
+    <<EOF
+    grafana:
+      adminUser: "${var.grafana_admin_user}"
+      adminPassword: "${var.grafana_admin_password}"
+    EOF
+  ]
 }

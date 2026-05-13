@@ -1,4 +1,8 @@
 resource "helm_release" "argocd" {
+  
+  depends_on = [
+    helm_release.alb_controller
+  ]
 
   name = "argocd"
   namespace = "argocd"
@@ -8,8 +12,13 @@ resource "helm_release" "argocd" {
 
   chart = "argo-cd"
 
-  depends_on = [
-    helm_release.alb_controller
+  timeout = 1200
+
+  values = [
+<<EOF
+configs:
+  secret:
+    argocdServerAdminPassword: "${var.argocd_admin_password}"
+EOF
   ]
-  
 }
