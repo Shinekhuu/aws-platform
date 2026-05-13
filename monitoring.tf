@@ -26,7 +26,6 @@ resource "helm_release" "prometheus" {
     grafana:
       adminUser: "${var.grafana_admin_user}"
       adminPassword: "${var.grafana_admin_password}"
-
       additionalDataSources:
         - name: Loki
           type: loki
