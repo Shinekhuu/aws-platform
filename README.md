@@ -44,3 +44,17 @@ kubectl patch namespace argocd \
 kubectl patch namespace monitoring \
 -p '{"metadata":{"finalizers":[]}}' \
 --type=merge
+
+-----------
+
+Error: installation failed
+with helm_release.alb_controller
+on alb-controller.tf line 41, in resource "helm_release" "alb_controller":
+resource "helm_release" "alb_controller" {
+cannot re-use a name that is still in use
+
+🥇 Fastest fix
+
+Run:
+
+helm uninstall aws-load-balancer-controller -n kube-system

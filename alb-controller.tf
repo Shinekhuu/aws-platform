@@ -51,6 +51,14 @@ resource "helm_release" "alb_controller" {
 
   chart = "aws-load-balancer-controller"
 
+  atomic           = true
+  cleanup_on_fail  = true
+  wait             = true
+
+  replace          = true
+  force_update     = true
+  recreate_pods    = true
+  
   timeout = 1200
 
   set = [
