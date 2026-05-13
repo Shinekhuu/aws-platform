@@ -57,4 +57,10 @@ cannot re-use a name that is still in use
 
 Run:
 
+export XDG_RUNTIME_DIR=/tmp/runtime-$UID && \
+mkdir -p $XDG_RUNTIME_DIR && \
+chmod 700 $XDG_RUNTIME_DIR
+
+helm list -n kube-system
+
 helm uninstall aws-load-balancer-controller -n kube-system
