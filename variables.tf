@@ -21,3 +21,15 @@ variable "grafana_admin_user" {}
 variable "grafana_admin_password" {
   sensitive = true
 }
+
+variable "gitlab_registry_username" {
+  sensitive = true
+}
+
+variable "gitlab_registry_token" {
+  sensitive = true
+}
+
+variable "gitlab_registry_email" {
+  sensitive = true
+}

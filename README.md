@@ -1,18 +1,28 @@
-aws-platform/
+platform/
 ├── versions.tf
 ├── variables.tf
+├── outputs.tf
+│
 ├── providers.tf
 ├── remote-state.tf
 │
 ├── acm.tf
+├── namespaces.tf
+├── gitlab-registry-secret.tf
+│
 ├── alb-controller.tf
-├── argocd.tf
-├── monitoring.tf
 ├── external-dns.tf
+│
+├── argocd.tf
+├── argocd-root-app.tf
+│
+├── monitoring.tf
 ├── ingress.tf
 │
-└── iam/
-    └── alb-controller-policy.json
+├── iam/
+│   └── alb-controller-policy.json
+│
+└── README.md
 
 ✔ Sensitive & ENV
 AWS_ACCESS_KEY_ID
