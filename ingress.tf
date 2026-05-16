@@ -18,6 +18,8 @@ resource "kubernetes_ingress_v1" "argocd" {
 
       "alb.ingress.kubernetes.io/success-codes" = "200,301,302,307"
 
+      "alb.ingress.kubernetes.io/backend-protocol" = "HTTP"
+
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
       "alb.ingress.kubernetes.io/target-type" = "ip"

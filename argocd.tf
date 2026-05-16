@@ -25,14 +25,14 @@ resource "helm_release" "argocd" {
 <<EOF
 configs:
   secret:
-    argocdServerAdminPassword:
-      "${var.argocd_admin_password}"
+    argocdServerAdminPassword: "${var.argocd_admin_password}"
 
   cm:
     url: https://argocd.${var.domain_name}
 
 server:
-  insecure: true
+  extraArgs:
+    - --insecure
 EOF
   ]
 }
