@@ -15,6 +15,7 @@ platform/
 │
 ├── argocd.tf
 ├── argocd-root-app.tf
+├── argocd-image-updater.tf
 │
 ├── monitoring.tf
 ├── ingress.tf
