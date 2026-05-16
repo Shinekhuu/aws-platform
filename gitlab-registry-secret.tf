@@ -12,7 +12,7 @@ resource "kubernetes_secret_v1" "gitlab_registry" {
   type = "kubernetes.io/dockerconfigjson"
 
   data = {
-    ".dockerconfigjson" = base64encode(jsonencode({
+    ".dockerconfigjson" = jsonencode({
       auths = {
         "registry.gitlab.com" = {
           username = var.gitlab_registry_username
@@ -24,6 +24,6 @@ resource "kubernetes_secret_v1" "gitlab_registry" {
           )
         }
       }
-    }))
+    })
   }
 }
