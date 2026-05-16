@@ -16,6 +16,10 @@ resource "kubernetes_ingress_v1" "argocd" {
 
       "alb.ingress.kubernetes.io/group.name" = "gocars"
 
+      "alb.ingress.kubernetes.io/healthcheck-path" = "/healthz"
+
+      "alb.ingress.kubernetes.io/success-codes" = "200"
+
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
       "alb.ingress.kubernetes.io/target-type" = "ip"
@@ -73,6 +77,10 @@ resource "kubernetes_ingress_v1" "grafana" {
       "kubernetes.io/ingress.class" = "alb"
 
       "alb.ingress.kubernetes.io/group.name" = "gocars"
+
+      "alb.ingress.kubernetes.io/healthcheck-path" = "/api/health"
+
+      "alb.ingress.kubernetes.io/success-codes" = "200"
 
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
