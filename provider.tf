@@ -2,6 +2,14 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_eks_cluster" "this" {
+  name = data.terraform_remote_state.infrastructure.outputs.cluster_name
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = data.aws_eks_cluster.this.name
+}
+
 provider "kubernetes" {
 
   host = data.aws_eks_cluster.this.endpoint
@@ -12,18 +20,7 @@ provider "kubernetes" {
       .data
   )
 
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-
-    command = "aws"
-
-    args = [
-      "eks",
-      "get-token",
-      "--cluster-name",
-      data.aws_eks_cluster.this.name
-    ]
-  }
+  token = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
@@ -38,18 +35,7 @@ provider "helm" {
         .data
     )
 
-    exec = {
-      api_version = "client.authentication.k8s.io/v1beta1"
-
-      command = "aws"
-
-      args = [
-        "eks",
-        "get-token",
-        "--cluster-name",
-        data.aws_eks_cluster.this.name
-      ]
-    }
+    token = data.aws_eks_cluster_auth.this.token
   }
 }
 
