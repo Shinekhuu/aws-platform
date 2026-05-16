@@ -14,6 +14,8 @@ resource "kubernetes_ingress_v1" "argocd" {
 
       "kubernetes.io/ingress.class" = "alb"
 
+      "alb.ingress.kubernetes.io/group.name" = "gocars"
+
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
       "alb.ingress.kubernetes.io/target-type" = "ip"
@@ -69,6 +71,8 @@ resource "kubernetes_ingress_v1" "grafana" {
 
     annotations = {
       "kubernetes.io/ingress.class" = "alb"
+
+      "alb.ingress.kubernetes.io/group.name" = "gocars"
 
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
