@@ -1,7 +1,7 @@
 resource "kubernetes_secret_v1" "gitlab_registry" {
 
   depends_on = [
-    kubernetes_manifest.argocd_root_app
+    kubernetes_namespace_v1.frontend
   ]
 
   metadata {
