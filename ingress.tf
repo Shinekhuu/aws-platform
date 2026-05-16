@@ -16,9 +16,7 @@ resource "kubernetes_ingress_v1" "argocd" {
 
       "alb.ingress.kubernetes.io/group.name" = "gocars"
 
-      "alb.ingress.kubernetes.io/healthcheck-path" = "/healthz"
-
-      "alb.ingress.kubernetes.io/success-codes" = "200"
+      "alb.ingress.kubernetes.io/success-codes" = "200,301,302,307"
 
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
 
