@@ -4,7 +4,7 @@ platform/
 ├── providers.tf
 ├── remote-state.tf
 │
-├── namespace.tf
+├── namespaces.tf
 ├── acm.tf
 ├── alb-controller.tf
 ├── external-dns.tf
