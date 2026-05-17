@@ -19,7 +19,7 @@ resource "kubernetes_manifest" "argocd_root_app" {
       source = {
         repoURL        = "https://gitlab.com/terraform6043020/aws/gitops.git"
         targetRevision = "HEAD"
-        path           = "argocd"
+        path           = "."
       }
 
       destination = {

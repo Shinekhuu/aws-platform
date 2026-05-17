@@ -1,9 +1,5 @@
 resource "kubernetes_secret_v1" "gitlab_registry" {
-
-  depends_on = [
-    kubernetes_namespace_v1.frontend
-  ]
-
+  
   metadata {
     name      = "gitlab-registry"
     namespace = "frontend"
