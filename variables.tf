@@ -33,3 +33,7 @@ variable "gitlab_registry_token" {
 variable "gitlab_registry_email" {
   sensitive = true
 }
+
+variable "gitlab_username" {}
+
+variable "gitlab_pat" {}

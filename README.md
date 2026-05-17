@@ -1,24 +1,19 @@
 platform/
 ├── versions.tf
 ├── variables.tf
-├── outputs.tf
-│
 ├── providers.tf
 ├── remote-state.tf
 │
+├── namespace.tf
 ├── acm.tf
-├── namespaces.tf
-├── gitlab-registry-secret.tf
-│
 ├── alb-controller.tf
 ├── external-dns.tf
-│
-├── argocd.tf
-├── argocd-root-app.tf
-├── argocd-image-updater.tf
-│
 ├── monitoring.tf
-├── ingress.tf
+├── argocd.tf
+├── argocd-image-updater.tf
+├── argocd-root-app.tf
+├── gitlab-registry-secret.tf
+├── gitlab-gitops-secret.tf
 │
 ├── iam/
 │   └── alb-controller-policy.json
