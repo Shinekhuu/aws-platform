@@ -14,6 +14,8 @@ platform/
 ├── argocd-root-app.tf
 ├── gitlab-registry-secret.tf
 ├── gitlab-gitops-secret.tf
+├── argocd-ingress.tf
+├── grafana-ingress.tf
 │
 ├── iam/
 │   └── alb-controller-policy.json
