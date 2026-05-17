@@ -1,0 +1,67 @@
+resource "kubernetes_ingress_v1" "argocd" {
+
+  wait_for_load_balancer = true
+
+  depends_on = [
+    helm_release.argocd
+  ]
+
+  metadata {
+    name      = "argocd"
+    namespace = "argocd"
+
+    annotations = {
+
+      "kubernetes.io/ingress.class" = "alb"
+
+      "alb.ingress.kubernetes.io/group.name" = "gocars"
+
+      "alb.ingress.kubernetes.io/backend-protocol" = "HTTP"
+
+      "alb.ingress.kubernetes.io/success-codes" = "200,301,302,307"
+
+      "alb.ingress.kubernetes.io/scheme" = "internet-facing"
+
+      "alb.ingress.kubernetes.io/target-type" = "ip"
+
+      "alb.ingress.kubernetes.io/listen-ports" = "[{\"HTTP\":80},{\"HTTPS\":443}]"
+
+      "alb.ingress.kubernetes.io/ssl-redirect" = "443"
+
+      "alb.ingress.kubernetes.io/certificate-arn" = aws_acm_certificate.main.arn
+
+      "external-dns.alpha.kubernetes.io/hostname" = "argocd.${var.domain_name}"
+    }
+  }
+
+  spec {
+
+    ingress_class_name = "alb"
+
+    rule {
+
+      host = "argocd.${var.domain_name}"
+
+      http {
+
+        path {
+
+          path      = "/"
+          path_type = "Prefix"
+
+          backend {
+
+            service {
+
+              name = "argocd-server"
+
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
