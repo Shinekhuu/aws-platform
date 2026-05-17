@@ -1,3 +1,23 @@
+# Platform Infrastructure
+
+Terraform-based Kubernetes platform stack for AWS EKS.
+
+This repository provisions and configures:
+
+- AWS Load Balancer Controller
+- External DNS
+- ArgoCD
+- ArgoCD Image Updater
+- Monitoring stack
+- Grafana ingress
+- ACM certificates
+- GitLab registry & GitOps secrets
+
+---
+
+# Structure
+
+```bash
 platform/
 ├── versions.tf
 ├── variables.tf
@@ -21,62 +41,235 @@ platform/
 │   └── alb-controller-policy.json
 │
 └── README.md
+```
 
-✔ Sensitive & ENV
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-CLOUDFLARE_API_TOKEN
+---
 
-✔ Environment-specific & Terraform variables
-region
-cloudflare_zone_id
+# Requirements
 
+- Terraform >= 1.5
+- AWS CLI
+- kubectl
+- Helm
+- Existing EKS Cluster
+- Cloudflare DNS Zone
 
-TODO: IRSA remove хийж байна temporarily.
+---
 
-IF: Error: object is being deleted: namespaces "monitoring" or "argocd" already exists
-🥇 Need ONE-TIME manual cleanup
+# Environment Variables
 
-ONLY ONCE 😄
+## Sensitive
+
+Export required secrets before running Terraform.
+
+```bash
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+export CLOUDFLARE_API_TOKEN=""
+```
+
+---
+
+# Terraform Variables
+
+Example:
+
+```hcl
+region               = "ap-northeast-1"
+cloudflare_zone_id   = "xxxxxxxxxxxxxxxx"
+```
+
+---
+
+# Deploy
+
+Initialize:
+
+```bash
+terraform init
+```
+
+Plan:
+
+```bash
+terraform plan
+```
+
+Apply:
+
+```bash
+terraform apply
+```
+
+---
+
+# Temporary Notes
+
+## IRSA
+
+IRSA removal is currently temporary.
+
+Some components may still use legacy authentication until migration is completed.
+
+---
+
+# Common Issues
+
+## Namespace stuck in Terminating
+
+Error example:
+
+```bash
+Error: object is being deleted: namespaces "monitoring" already exists
+```
+
+or
+
+```bash
+Error: object is being deleted: namespaces "argocd" already exists
+```
+
+## One-time cleanup
 
 Run:
+
+```bash
 kubectl delete ns argocd --force --grace-period=0
+
 kubectl delete ns monitoring --force --grace-period=0
+```
 
-🥈 If still terminating
+---
 
-Then:
+## If namespace still terminating
 
+Run:
+
+```bash
 kubectl patch namespace argocd \
 -p '{"metadata":{"finalizers":[]}}' \
 --type=merge
+
 kubectl patch namespace monitoring \
 -p '{"metadata":{"finalizers":[]}}' \
 --type=merge
+```
 
------------
+---
 
+# Helm Error
+
+## Error
+
+```bash
 Error: installation failed
-with helm_release.alb_controller
-on alb-controller.tf line 41, in resource "helm_release" "alb_controller":
-resource "helm_release" "alb_controller"
+
 cannot re-use a name that is still in use
+```
 
-🥇 Fastest fix
+Usually happens with:
 
-Run:
+```bash
+helm_release.alb_controller
+```
 
-export XDG_RUNTIME_DIR=/tmp/runtime-$UID && \
-mkdir -p $XDG_RUNTIME_DIR && \
+---
+
+## Fix
+
+Create runtime directory:
+
+```bash
+export XDG_RUNTIME_DIR=/tmp/runtime-$UID
+
+mkdir -p $XDG_RUNTIME_DIR
+
 chmod 700 $XDG_RUNTIME_DIR
+```
 
+Check installed releases:
+
+```bash
 helm list -n kube-system
+```
 
+Remove existing ALB controller release:
+
+```bash
 helm uninstall aws-load-balancer-controller -n kube-system
+```
 
-----------
+---
 
-For argocd password generate:
+# ArgoCD Admin Password
+
+Generate bcrypt password:
+
+```bash
 htpasswd -nbBC 10 "" P@ssw0rd \
 | tr -d ':\n' \
 | sed 's/$2y/$2a/'
+```
+
+---
+
+# Components
+
+## AWS Load Balancer Controller
+
+Manages AWS ALB resources for Kubernetes ingress.
+
+Terraform:
+- `alb-controller.tf`
+
+IAM Policy:
+- `iam/alb-controller-policy.json`
+
+---
+
+## External DNS
+
+Automatically manages DNS records in Cloudflare.
+
+Terraform:
+- `external-dns.tf`
+
+---
+
+## ArgoCD
+
+GitOps deployment platform.
+
+Terraform:
+- `argocd.tf`
+- `argocd-root-app.tf`
+- `argocd-ingress.tf`
+
+---
+
+## ArgoCD Image Updater
+
+Automatically updates image tags from container registry.
+
+Terraform:
+- `argocd-image-updater.tf`
+
+---
+
+## Monitoring Stack
+
+Monitoring and observability components.
+
+Terraform:
+- `monitoring.tf`
+- `grafana-ingress.tf`
+
+---
+
+# Notes
+
+- Namespace cleanup issue usually happens after interrupted Helm/Terraform operations.
+- ALB controller Helm conflicts are common after failed installs.
+- Use `terraform destroy` carefully in shared environments.
+
+---
