@@ -8,6 +8,9 @@ resource "kubernetes_ingress_v1" "grafana" {
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes = [
+      metadata[0].annotations["kubectl.kubernetes.io/last-applied-configuration"]
+    ]
   }
 
   metadata {
