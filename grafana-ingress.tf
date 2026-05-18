@@ -7,10 +7,6 @@ resource "kubernetes_ingress_v1" "grafana" {
   ]
 
   lifecycle {
-    ignore_changes = [
-      metadata[0].annotations,
-      metadata[0].labels,
-    ]
     create_before_destroy = true
   }
 
