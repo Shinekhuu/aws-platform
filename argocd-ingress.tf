@@ -6,17 +6,6 @@ resource "kubernetes_ingress_v1" "argocd" {
     helm_release.argocd
   ]
 
-  lifecycle {
-    # Prevent the identity mismatch from causing errors
-    ignore_changes = [
-      metadata[0].annotations["alb.ingress.kubernetes.io/certificate-arn"],
-      metadata[0].annotations["alb.ingress.kubernetes.io/ssl-redirect"],
-    ]
-    
-    # Create before destroy to maintain availability
-    create_before_destroy = true
-  }
-
   metadata {
     name      = "argocd"
     namespace = "argocd"
