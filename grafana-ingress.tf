@@ -1,5 +1,7 @@
 resource "kubernetes_ingress_v1" "grafana" {
 
+  wait_for_load_balancer = true
+
   depends_on = [
     helm_release.prometheus
   ]
