@@ -13,6 +13,13 @@ provider "kubernetes" {
   )
 
   token = data.aws_eks_cluster_auth.this.token
+
+  # Add these configurations
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
 provider "helm" {
