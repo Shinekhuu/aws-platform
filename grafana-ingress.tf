@@ -1,0 +1,73 @@
+resource "kubernetes_ingress_v1" "grafana" {
+
+  depends_on = [
+    helm_release.prometheus
+  ]
+
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations,
+      metadata[0].labels,
+    ]
+    create_before_destroy = true
+  }
+
+  metadata {
+    name      = "grafana"
+    namespace = "monitoring"
+
+    annotations = {
+
+      "kubernetes.io/ingress.class" = "alb"
+
+      "alb.ingress.kubernetes.io/group.name" = "gocars"
+
+      "alb.ingress.kubernetes.io/healthcheck-path" = "/api/health"
+
+      "alb.ingress.kubernetes.io/success-codes" = "200"
+
+      "alb.ingress.kubernetes.io/scheme" = "internet-facing"
+
+      "alb.ingress.kubernetes.io/target-type" = "ip"
+
+      "alb.ingress.kubernetes.io/listen-ports" = "[{\"HTTP\":80},{\"HTTPS\":443}]"
+
+      "alb.ingress.kubernetes.io/ssl-redirect" = "443"
+
+      "alb.ingress.kubernetes.io/certificate-arn" = aws_acm_certificate.main.arn
+
+      "external-dns.alpha.kubernetes.io/hostname" = "grafana.${var.domain_name}"
+    }
+  }
+
+  spec {
+
+    ingress_class_name = "alb"
+
+    rule {
+
+      host = "grafana.${var.domain_name}"
+
+      http {
+
+        path {
+
+          path      = "/"
+          path_type = "Prefix"
+
+          backend {
+
+            service {
+
+              name = "prometheus-grafana"
+
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
