@@ -1,16 +1,12 @@
 resource "kubernetes_ingress_v1" "grafana" {
 
-  wait_for_load_balancer = true
-
   depends_on = [
     helm_release.prometheus
   ]
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = [
-      metadata[0].annotations["kubectl.kubernetes.io/last-applied-configuration"]
-    ]
+    ignore_changes = all
   }
 
   metadata {
