@@ -17,4 +17,12 @@ terraform {
       source = "cloudflare/cloudflare"
     }
   }
+
+  cloud {
+    organization = "gocars"
+
+    workspaces {
+      name = "aws-platform"
+    }
+  }
 }
