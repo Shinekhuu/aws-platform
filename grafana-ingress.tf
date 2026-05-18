@@ -1,7 +1,5 @@
 resource "kubernetes_ingress_v1" "grafana" {
 
-  wait_for_load_balancer = true
-
   depends_on = [
     helm_release.prometheus
   ]
@@ -14,7 +12,7 @@ resource "kubernetes_ingress_v1" "grafana" {
 
       "kubernetes.io/ingress.class" = "alb"
 
-      "alb.ingress.kubernetes.io/group.name" = "gocars"
+      "alb.ingress.kubernetes.io/group.name" = "platform"
 
       "alb.ingress.kubernetes.io/healthcheck-path" = "/api/health"
 
