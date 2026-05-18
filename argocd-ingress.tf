@@ -14,7 +14,7 @@ resource "kubernetes_ingress_v1" "argocd" {
 
       "kubernetes.io/ingress.class" = "alb"
 
-      "alb.ingress.kubernetes.io/group.name" = "gocars"
+      "alb.ingress.kubernetes.io/group.name" = "platform"
 
       "alb.ingress.kubernetes.io/backend-protocol" = "HTTP"
 
