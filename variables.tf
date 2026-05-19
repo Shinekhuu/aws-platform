@@ -36,4 +36,6 @@ variable "gitlab_registry_email" {
 
 variable "gitlab_username" {}
 
-variable "gitlab_pat" {}
+variable "gitlab_pat" {
+  sensitive = true
+}
