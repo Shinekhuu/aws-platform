@@ -1,7 +1,7 @@
 resource "aws_iam_policy" "alb_controller" {
   name = "AWSLoadBalancerControllerIAMPolicy"
 
-  policy = file("${path.module}/iam/alb-controller-policy.json")
+  policy = file("${path.module}/policies/alb-controller-policy.json")
 }
 
 resource "aws_iam_role" "alb_controller" {
@@ -44,26 +44,26 @@ resource "helm_release" "alb_controller" {
     aws_iam_role_policy_attachment.alb_controller
   ]
 
-  name      = "aws-load-balancer-controller"
-  namespace = "kube-system"
+  name             = "aws-load-balancer-controller"
+  namespace        = "kube-system"
   create_namespace = true
 
   repository = "https://aws.github.io/eks-charts"
 
   chart = "aws-load-balancer-controller"
 
-  cleanup_on_fail  = true
-  wait             = true
+  cleanup_on_fail = true
+  wait            = true
 
-  replace          = true
-  force_update     = true
-  recreate_pods    = true
+  replace       = true
+  force_update  = true
+  recreate_pods = true
 
   timeout = 1200
 
   set = [
     {
-      name  = "clusterName"
+      name = "clusterName"
 
       value = data.terraform_remote_state.infra.outputs.cluster_name
     },
@@ -80,7 +80,7 @@ resource "helm_release" "alb_controller" {
       value = "true"
     },
     {
-      name  = "serviceAccount.name"
+      name = "serviceAccount.name"
 
       value = "aws-load-balancer-controller"
     },

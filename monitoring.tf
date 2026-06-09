@@ -22,7 +22,7 @@ resource "helm_release" "prometheus" {
   timeout = 1200
 
   values = [
-<<EOF
+    <<EOF
 grafana:
   adminUser: "${var.grafana_admin_user}"
   adminPassword: "${var.grafana_admin_password}"

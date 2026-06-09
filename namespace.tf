@@ -11,3 +11,10 @@ resource "kubernetes_namespace_v1" "backend" {
     name = "backend"
   }
 }
+
+resource "kubernetes_namespace_v1" "monitoring" {
+
+  metadata {
+    name = "monitoring"
+  }
+}
