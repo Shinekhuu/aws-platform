@@ -1,5 +1,5 @@
 resource "kubernetes_secret_v1" "gitlab_registry" {
-  
+
   metadata {
     name      = "gitlab-registry"
     namespace = "frontend"

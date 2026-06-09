@@ -22,7 +22,7 @@ resource "helm_release" "argocd" {
   timeout = 1200
 
   values = [
-<<EOF
+    <<EOF
 configs:
   secret:
     argocdServerAdminPassword: "${var.argocd_admin_password}"

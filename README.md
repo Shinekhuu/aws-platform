@@ -1,275 +1,338 @@
-# Platform Infrastructure
+# AWS Platform
 
-Terraform-based Kubernetes platform stack for AWS EKS.
+Terraform-managed Kubernetes platform services running on Amazon EKS.
 
-This repository provisions and configures:
+## Overview
 
-- AWS Load Balancer Controller
-- External DNS
-- ArgoCD
-- ArgoCD Image Updater
-- Monitoring stack
-- Grafana ingress
-- ACM certificates
-- GitLab registry & GitOps secrets
+This repository installs and manages the shared platform services required by workloads running on Amazon EKS.
+
+It serves as the platform layer between infrastructure provisioning and application deployment.
+
+## Platform Architecture
+
+```mermaid
+flowchart LR
+
+    INFRA[aws-infrastructure]
+    --> PLATFORM[aws-platform]
+
+    PLATFORM
+    --> GITOPS[gitops]
+
+    GITOPS
+    --> API[gocars-api]
+
+    GITOPS
+    --> AUTH[auth-service]
+
+    GITOPS
+    --> MEILI[meilisearch]
+```
 
 ---
 
-# Structure
+## Responsibilities
 
-```bash
-platform/
-├── versions.tf
-├── variables.tf
-├── providers.tf
-├── remote-state.tf
-│
-├── namespaces.tf
-├── acm.tf
-├── alb-controller.tf
-├── external-dns.tf
-├── monitoring.tf
+* Install ArgoCD
+* Install ArgoCD Image Updater
+* Install AWS Load Balancer Controller
+* Install ExternalDNS
+* Install Prometheus
+* Install Grafana
+* Install Loki
+* Configure platform-level IAM integration
+* Configure GitOps foundation
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TD
+
+    INFRA[aws-infrastructure]
+    --> STATE[Terraform Remote State]
+
+    STATE
+    --> PLATFORM[aws-platform]
+
+    PLATFORM
+    --> EKS[EKS Cluster]
+
+    EKS --> ARGO[ArgoCD]
+    EKS --> IMG[Image Updater]
+    EKS --> ALB[ALB Controller]
+    EKS --> DNS[ExternalDNS]
+    EKS --> PROM[Prometheus]
+    EKS --> GRAF[Grafana]
+    EKS --> LOKI[Loki]
+
+    ARGO --> GITOPS[gitops]
+```
+
+---
+
+## Platform Services
+
+| Service                      | Purpose                      |
+| ---------------------------- | ---------------------------- |
+| ArgoCD                       | GitOps deployment engine     |
+| Image Updater                | Automated image promotion    |
+| AWS Load Balancer Controller | ALB integration              |
+| ExternalDNS                  | DNS automation               |
+| Prometheus                   | Metrics collection           |
+| Grafana                      | Dashboards and visualization |
+| Loki                         | Centralized logging          |
+
+---
+
+## Platform Capabilities
+
+* GitOps Deployments
+* Automated Image Promotion
+* DNS Automation
+* AWS Load Balancer Integration
+* Centralized Logging
+* Metrics Collection
+* Dashboarding
+* Kubernetes Platform Management
+* Infrastructure Observability
+* Application Observability
+
+---
+
+## Observability Stack
+
+```text
+Prometheus
+├── Kubernetes Metrics
+├── Application Metrics
+├── Infrastructure Metrics
+└── AWS Metrics
+
+Grafana
+├── Infrastructure Dashboards
+├── Kubernetes Dashboards
+├── Application Dashboards
+└── Operational Dashboards
+
+Loki
+├── Kubernetes Logs
+├── Application Logs
+└── Platform Logs
+```
+
+---
+
+## Monitoring Architecture
+
+```mermaid
+flowchart LR
+
+    APPS[Applications]
+    --> PROM[Prometheus]
+
+    APPS
+    --> LOKI[Loki]
+
+    PROM
+    --> GRAFANA[Grafana]
+
+    LOKI
+    --> GRAFANA
+```
+
+---
+
+## Repository Structure
+
+```text
+aws-platform/
+
+├── namespace.tf
 ├── argocd.tf
-├── argocd-image-updater.tf
 ├── argocd-root-app.tf
-├── gitlab-registry-secret.tf
-├── gitlab-gitops-secret.tf
-├── argocd-ingress.tf
-├── grafana-ingress.tf
-│
-├── iam/
+├── argocd-image-updater.tf
+
+├── ingress-acm.tf
+├── ingress-alb-controller.tf
+├── ingress-external-dns.tf
+├── ingress-argocd.tf
+├── ingress-grafana.tf
+
+├── monitoring.tf
+
+├── providers.tf
+├── variables.tf
+├── outputs.tf
+├── remote-state.tf
+├── versions.tf
+
+├── policies/
 │   └── alb-controller-policy.json
 │
-└── README.md
+└── secrets/
 ```
 
 ---
 
-# Requirements
+## Dependencies
 
-- Terraform >= 1.5
-- AWS CLI
-- kubectl
-- Helm
-- Existing EKS Cluster
-- Cloudflare DNS Zone
+This repository depends on outputs exported by aws-infrastructure.
+
+Required Terraform Outputs:
+
+| Output            | Purpose             |
+| ----------------- | ------------------- |
+| cluster_name      | EKS access          |
+| oidc_provider_arn | IRSA configuration  |
+| oidc_provider_url | OIDC authentication |
 
 ---
 
-# Environment Variables
+## Deployment Chain
 
-## Sensitive
-
-Export required secrets before running Terraform.
-
-```bash
-export AWS_ACCESS_KEY_ID=""
-export AWS_SECRET_ACCESS_KEY=""
-export CLOUDFLARE_API_TOKEN=""
+```text
+aws-infrastructure
+        ↓
+aws-platform
+        ↓
+gitops
+        ↓
+ArgoCD
+        ↓
+Applications
 ```
 
 ---
 
-# Terraform Variables
+## Data Flow
 
-Example:
+```mermaid
+sequenceDiagram
 
-```hcl
-region               = "ap-northeast-1"
-cloudflare_zone_id   = "xxxxxxxxxxxxxxxx"
+    participant Infra
+    participant State
+    participant Platform
+    participant EKS
+
+    Infra->>State: Export Outputs
+    State->>Platform: Read Outputs
+    Platform->>EKS: Install Services
 ```
 
 ---
 
-# Deploy
+## GitOps Integration
 
-Initialize:
+```mermaid
+flowchart LR
 
-```bash
-terraform init
-```
+    ARGO[ArgoCD]
+    --> GITOPS[gitops Repository]
 
-Plan:
+    GITOPS
+    --> APPS[Applications]
 
-```bash
-terraform plan
-```
-
-Apply:
-
-```bash
-terraform apply
+    APPS
+    --> EKS
 ```
 
 ---
 
-# Temporary Notes
+## Security Architecture
 
-## IRSA
+### Security Controls
 
-IRSA removal is currently temporary.
-
-Some components may still use legacy authentication until migration is completed.
+* IAM Roles for Service Accounts (IRSA)
+* OIDC Authentication
+* Least Privilege IAM Policies
+* GitOps Access Control
+* Kubernetes RBAC
+* TLS-secured ingress
+* Namespace Isolation
 
 ---
 
-# Common Issues
+## Deployment Flow
 
-## Namespace stuck in Terminating
+```mermaid
+flowchart LR
 
-Error example:
+    Infrastructure
+    --> RemoteState
 
-```bash
-Error: object is being deleted: namespaces "monitoring" already exists
-```
+    RemoteState
+    --> Platform
 
-or
+    Platform
+    --> Helm
 
-```bash
-Error: object is being deleted: namespaces "argocd" already exists
-```
-
-## One-time cleanup
-
-Run:
-
-```bash
-kubectl delete ns argocd --force --grace-period=0
-
-kubectl delete ns monitoring --force --grace-period=0
+    Helm
+    --> Kubernetes
 ```
 
 ---
 
-## If namespace still terminating
+## Design Decisions
 
-Run:
+### Why ArgoCD?
 
-```bash
-kubectl patch namespace argocd \
--p '{"metadata":{"finalizers":[]}}' \
---type=merge
+ArgoCD enables declarative GitOps deployments and continuous reconciliation.
 
-kubectl patch namespace monitoring \
--p '{"metadata":{"finalizers":[]}}' \
---type=merge
-```
+### Why ExternalDNS?
 
----
+ExternalDNS automates DNS record management from Kubernetes resources.
 
-# Helm Error
+### Why Prometheus?
 
-## Error
+Prometheus provides cloud-native metrics collection and monitoring.
 
-```bash
-Error: installation failed
+### Why Grafana?
 
-cannot re-use a name that is still in use
-```
+Grafana provides dashboards and operational visibility.
 
-Usually happens with:
+### Why Loki?
 
-```bash
-helm_release.alb_controller
-```
+Loki provides centralized logging for platform and application workloads.
 
 ---
 
-## Fix
+## Future Improvements
 
-Create runtime directory:
-
-```bash
-export XDG_RUNTIME_DIR=/tmp/runtime-$UID
-
-mkdir -p $XDG_RUNTIME_DIR
-
-chmod 700 $XDG_RUNTIME_DIR
-```
-
-Check installed releases:
-
-```bash
-helm list -n kube-system
-```
-
-Remove existing ALB controller release:
-
-```bash
-helm uninstall aws-load-balancer-controller -n kube-system
-```
+* Alertmanager
+* Karpenter
+* OpenTelemetry
+* Distributed Tracing
+* Cost Monitoring
+* Multi-Environment Deployments
 
 ---
 
-# ArgoCD Admin Password
+## Technologies
 
-Generate bcrypt password:
-
-```bash
-htpasswd -nbBC 10 "" P@ssw0rd \
-| tr -d ':\n' \
-| sed 's/$2y/$2a/'
-```
-
----
-
-# Components
-
-## AWS Load Balancer Controller
-
-Manages AWS ALB resources for Kubernetes ingress.
-
-Terraform:
-- `alb-controller.tf`
-
-IAM Policy:
-- `iam/alb-controller-policy.json`
+* Terraform
+* Helm
+* Kubernetes
+* ArgoCD
+* ArgoCD Image Updater
+* Prometheus
+* Grafana
+* Loki
+* ExternalDNS
+* AWS Load Balancer Controller
 
 ---
 
-## External DNS
+## Related Repositories
 
-Automatically manages DNS records in Cloudflare.
-
-Terraform:
-- `external-dns.tf`
-
----
-
-## ArgoCD
-
-GitOps deployment platform.
-
-Terraform:
-- `argocd.tf`
-- `argocd-root-app.tf`
-- `argocd-ingress.tf`
+* aws-infrastructure
+* gitops
+* gocars-api
+* auth-service
 
 ---
 
-## ArgoCD Image Updater
+## License
 
-Automatically updates image tags from container registry.
-
-Terraform:
-- `argocd-image-updater.tf`
-
----
-
-## Monitoring Stack
-
-Monitoring and observability components.
-
-Terraform:
-- `monitoring.tf`
-- `grafana-ingress.tf`
-
----
-
-# Notes
-
-- Namespace cleanup issue usually happens after interrupted Helm/Terraform operations.
-- ALB controller Helm conflicts are common after failed installs.
-- Use `terraform destroy` carefully in shared environments.
-
----
+Licensed under the MIT License.

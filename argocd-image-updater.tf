@@ -4,8 +4,8 @@ resource "helm_release" "argocd_image_updater" {
     helm_release.argocd
   ]
 
-  name       = "argocd-image-updater"
-  namespace  = "argocd"
+  name      = "argocd-image-updater"
+  namespace = "argocd"
 
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argocd-image-updater"
@@ -20,7 +20,7 @@ resource "helm_release" "argocd_image_updater" {
   timeout = 1200
 
   values = [
-<<EOF
+    <<EOF
 config:
   registries:
     - name: GitLab
